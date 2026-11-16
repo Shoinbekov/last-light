@@ -38,6 +38,7 @@ namespace Vampire
             { "volume",     new[] { "Volume",                "Громкость" } },
             { "language",   new[] { "Language",              "Язык" } },
             { "close",      new[] { "Close",                 "Закрыть" } },
+            { "quit",       new[] { "Quit game",             "Выйти из игры" } },
             { "reset",      new[] { "Reset progress",        "Сбросить прогресс" } },
             { "resetSure",  new[] { "Sure? Click again",     "Точно? Нажми ещё раз" } },
             { "pause",      new[] { "PAUSE",                 "ПАУЗА" } },
@@ -247,7 +248,7 @@ namespace Vampire
             Stretch(dim.rectTransform, 0, 0, 0, 0);
 
             var box = MakeImage("Window", dim.transform, PanelColor);
-            Place(box.transform, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(700, inMenu ? 560 : 520));
+            Place(box.transform, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(700, inMenu ? 650 : 520));
 
             var title = MakeText(box.transform, 52, AccentColor, TextAlignmentOptions.Center);
             Place(title.transform, new Vector2(0.5f, 1), new Vector2(0, -30), new Vector2(640, 70));
@@ -308,6 +309,9 @@ namespace Vampire
                 reset.image.color = new Color(0.45f, 0.18f, 0.18f, 1f);
                 refreshers.Add(() => { armed = false; SetLabel(reset, T("reset")); });
 
+                var quit = MakeButton(box.transform, "quit", QuitGame);
+                Place(quit.transform, new Vector2(0.5f, 0), new Vector2(0, 130), new Vector2(420, 64));
+
                 var close = MakeButton(box.transform, "close", () => settingsPanel.SetActive(false), AccentColor, Color.black);
                 Place(close.transform, new Vector2(0.5f, 0), new Vector2(0, 40), new Vector2(420, 80));
             }
@@ -317,6 +321,15 @@ namespace Vampire
                 Place(menu.transform, new Vector2(0.5f, 0), new Vector2(0, 40), new Vector2(420, 80));
             }
             return dim.gameObject;
+        }
+
+        static void QuitGame()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
 
         void SetLanguage(string code)
